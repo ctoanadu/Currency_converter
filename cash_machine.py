@@ -1,3 +1,6 @@
+
+import sys
+
 COIN_VALUES = {
     0.20: '0.20£',
     0.50: '0.50£',
@@ -41,7 +44,6 @@ def load_coins(amount, coin_type):
 
 def calculate_coins(banknote_amount):
     
-
     update_coins=eliminate_zero(coins)
     target_value = banknote_amount
     coins_to_return = {}
@@ -95,6 +97,14 @@ def exchange(banknote_amount):
         
     except TypeError:
         print("<CANNOT EXCHANGE")
+        update_coins=eliminate_zero(coins) 
+        note_update=eliminate_zero(banknotes)
+
+        update_coins_format=', '.join([f'{count} {value}£'for value, count in update_coins.items()])
+        note_update_format=', '.join([f'{count} {value}£'for value, count in note_update.items()])
+
+        print(f'={update_coins_format}, {note_update_format}')
+
     
 
 
@@ -116,6 +126,13 @@ def process_commands(filename):
 
         return result
 
+def main():
+    if len(sys.argv)<2:
+        print("Usage: python cash_machine.py input.txt")
+        
+    filename=sys.argv[1]
+    process_commands(filename)
+
 if __name__=="__main__":
-    
-    process_commands("input.txt")
+    main()
+
