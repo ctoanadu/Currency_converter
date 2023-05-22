@@ -15,8 +15,8 @@ BANKNOTE_VALUES = {
 }
 
 
-coins = {value: 0 for value in COIN_VALUES}
-banknotes = {value: 0 for value in BANKNOTE_VALUES}
+coins = {coin: 0 for coin in COIN_VALUES.keys()}
+banknotes = {note: 0 for note in BANKNOTE_VALUES.keys()}
 
 
 
@@ -61,9 +61,9 @@ def calculate_coins(banknote_amount):
             return coins_to_return
     if coins_to_return=={}:
         return 'CANNOT EXCHANGE'
+    
             
-
-    return None
+   
 
 
 
@@ -80,7 +80,6 @@ def exchange(banknote_amount):
             
         update_coins=eliminate_zero(coins) 
          
-
         for i in banknotes.keys():
             if i==banknote_amount:
                 banknotes[i]+=1
