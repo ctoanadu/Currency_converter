@@ -12,6 +12,7 @@ BANKNOTE_VALUES = {
     5: '5£',
     10: '10£',
     20: '20£'
+    
 }
 
 #Created global coin dictionary with a default value of 0
