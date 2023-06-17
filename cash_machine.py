@@ -14,13 +14,17 @@ BANKNOTE_VALUES = {
     20: '20£'
 }
 
-
+#Created global coin dictionary with a default value of 0
 coins = {coin: 0 for coin in COIN_VALUES.keys()}
+
+#Created global banknote dictionary with a default value of 0
 banknotes = {note: 0 for note in BANKNOTE_VALUES.keys()}
 
 
 
 def eliminate_zero(dict_remove):
+    """ This funcitons creates a dictionary by appending items from
+     argument(dictionary) that has a value that is not equal to zero"""
     dictt={}
     for i,j in dict_remove.items():
         if j!=0:
@@ -31,8 +35,10 @@ def eliminate_zero(dict_remove):
 
 
 def load_coins(amount, coin_type):
+    """ Loads the amount and coin type which updates the global 
+        coin dictionary and return a formated output
+    """
     if coin_type not in coins:
-        
         return 'INVALID COIN'
     else:
         coins[coin_type] += amount
@@ -43,28 +49,26 @@ def load_coins(amount, coin_type):
 
 
 def calculate_coins(banknote_amount):
+    """ Converts the banknote amount into coin by considering 
+    the available coins in the global coin dictionary"""
     
     update_coins=eliminate_zero(coins)
-    target_value = banknote_amount
+    
     coins_to_return = {}
     
-    for coin_value in sorted(update_coins.keys()):
+    for coin_value in update_coins.keys():
         coin_count = update_coins[coin_value]
-        coin_needed = int(target_value // coin_value)
+        coin_needed = int(banknote_amount / coin_value)
         coin_to_return = min(coin_count, coin_needed)
         
-        if coin_to_return > 0:
-            coins_to_return[coin_value] = coin_to_return
-            target_value -= coin_value * coin_to_return
+        coins_to_return[coin_value] = coin_to_return
+        banknote_amount -= coin_value * coin_to_return
 
-        if target_value == 0:
+        if banknote_amount == 0:
             return coins_to_return
-    if coins_to_return=={}:
-        return 'CANNOT EXCHANGE'
+    return None
     
             
-   
-
 
 
 def exchange(banknote_amount):
@@ -75,19 +79,20 @@ def exchange(banknote_amount):
         for key, value in coins.items():
             if key in coin_return:
                 coins[key]=value - coin_return[key] 
-            else:
-                pass
-            
+             
+        #Eliminate items that have values equal to zero 
         update_coins=eliminate_zero(coins) 
-         
+
+        #Update the banknote global dictionary with a valid banknote 
         for i in banknotes.keys():
             if i==banknote_amount:
                 banknotes[i]+=1
-            else:
-                pass 
+            
 
+        #Eliminate items that have values equal to zero
         note_update=eliminate_zero(banknotes)
 
+        #formating the output of the function
         update_coins_format=', '.join([f'{count} {value}£'for value, count in update_coins.items()])
         coin_return_format=', '.join([f'{count} {value}£'for value, count in coin_return.items()])
         note_update_format=', '.join([f'{count} {value}£'for value, count in note_update.items()])
@@ -95,6 +100,7 @@ def exchange(banknote_amount):
         print(f'={update_coins_format}, {note_update_format}')
         
     except TypeError:
+         #formating the output of the function
         print("<CANNOT EXCHANGE")
         update_coins=eliminate_zero(coins) 
         note_update=eliminate_zero(banknotes)
@@ -108,6 +114,8 @@ def exchange(banknote_amount):
 
 
 def process_commands(filename):
+    """ reads the filepath and interates each line extracts parameters and  words 
+    like 'Load' and 'exchnage' that determines the functions that would be executed """
     with open(filename, 'r') as file:
         for line in file:
             command = line.strip().split(' ')
@@ -123,11 +131,12 @@ def process_commands(filename):
                 banknote_amount = int(command[1])
                 result = exchange(banknote_amount)
 
+            else:
+                result='INVALID FUNCTION'
+
         return result
 
 def main():
-    if len(sys.argv)<2:
-        print("Usage: python cash_machine.py input.txt")
         
     filename=sys.argv[1]
     process_commands(filename)
